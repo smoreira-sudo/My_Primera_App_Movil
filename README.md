@@ -5,7 +5,7 @@ Proyecto desarrollado como parte de la evaluación de desarrollo de aplicaciones
 ---
 
 ## 👤 Información del Autor
-* **Estudiante:** Segundo alexander Moreira Mnedoza
+* **Estudiante:** Segundo alexander Moreira Mendoza
 * **Asignatura:** Desarrollo de Aplicaciones Móviles
 * **IDE Utilizado:** Visual Studio Code
 * **Lenguaje / Framework:** Dart / Flutter (Material Design 3)
@@ -18,7 +18,6 @@ Proyecto desarrollado como parte de la evaluación de desarrollo de aplicaciones
 
 FLUTTER DOCTOR
 ![alt text](<Captura de pantalla 2026-08-23 164030.png>)
-
 
 
 
