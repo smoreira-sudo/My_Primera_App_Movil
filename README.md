@@ -16,6 +16,12 @@ Proyecto desarrollado como parte de la evaluación de desarrollo de aplicaciones
 ## 🚀 Descripción del Proyecto
 *Exclusive Barber* es una solución digital pensada para emprendimientos de barberos y estilistas independientes. La app proporciona un panel de control con métricas en tiempo real, agendamiento de citas, registro detallado de clientes con sus preferencias de corte, reporte básico de finanzas y gestión de perfil.
 
+FLUTTER DOCTOR
+![alt text](<Captura de pantalla 2026-08-23 164030.png>)
+
+
+
+
 ### Funcionalidades Clave
 1. **Dashboard (Inicio):** Resumen de citas e ingresos diarios mediante tarjetas métricas.
 
