@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:exclusive_barber/models/cliente_model.dart';
+import 'package:my_primera_app_movil/models/cliente_model.dart';
 
 class RegistrarClienteScreen extends StatefulWidget {
   const RegistrarClienteScreen({super.key});

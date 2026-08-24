@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:exclusive_barber/models/servicio_model.dart'; // O 'package:tu_proyecto/servicio_model.dart' según dónde guardaste el modelo
+import 'package:my_primera_app_movil/models/servicio_model.dart'; // O 'package:tu_proyecto/servicio_model.dart' según dónde guardaste el modelo
 
 class ServiciosScreen extends StatefulWidget {
   const ServiciosScreen({super.key});
