@@ -1,122 +1,619 @@
 import 'package:flutter/material.dart';
-
+import 'package:exclusive_barber/models/cliente_model.dart';
+import 'package:exclusive_barber/screens/servicios_screen.dart';
+import 'package:exclusive_barber/screens/registrar_cliente_screen.dart';
+ // Ajusta la ruta según la estructura de tus carpetas
 void main() {
-  runApp(const MyApp());
+  runApp(const ExclusiveBarberApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class ExclusiveBarberApp extends StatelessWidget {
+  const ExclusiveBarberApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Exclusive Barber',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: .fromSeed(seedColor: Colors.deepPurple),
+        useMaterial3: true,
+        scaffoldBackgroundColor: const Color(0xFFF4EFE6), // Fondo crema principal
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color(0xFFB89B77),
+          primary: const Color(0xFFB89B77), // Tono marrón claro/dorado
+          surface: const Color(0xFFF4EFE6),
+        ),
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MainNavigationScreen(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
+class MainNavigationScreen extends StatefulWidget {
+  const MainNavigationScreen({super.key});
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<MainNavigationScreen> createState() => _MainNavigationScreenState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+class _MainNavigationScreenState extends State<MainNavigationScreen> {
+  int _currentIndex = 0;
 
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
+  // Lista de las pantallas de la aplicación
+ final List<Widget> _screens = [
+    HomeScreen(),
+    AgendaScreen(),
+    ClientesScreen(),
+    ServiciosScreen(),
+    PerfilScreen(),
+    RegistrarClienteScreen(),
+    FinanzasScreen(),
+  ];
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return Scaffold(
-      appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
+      body: SafeArea(child: _screens[_currentIndex]),
+      bottomNavigationBar: NavigationBar(
+        selectedIndex: _currentIndex,
+        onDestinationSelected: (index) {
+          setState(() {
+            _currentIndex = index;
+          });
+        },
+        backgroundColor: Colors.white,
+        indicatorColor: const Color(0xFFF2E9DB),
+        destinations: const [
+          NavigationDestination(
+            icon: Icon(Icons.home_outlined),
+            selectedIcon: Icon(Icons.home, color: Color(0xFF8C7355)),
+            label: '',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.calendar_today_outlined),
+            selectedIcon: Icon(Icons.calendar_today, color: Color(0xFF8C7355)),
+            label: 'Agenda',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.people_outline),
+            selectedIcon: Icon(Icons.people, color: Color(0xFF8C7355)),
+            label: '',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.account_balance_wallet_outlined),
+            selectedIcon: Icon(Icons.account_balance_wallet, color: Color(0xFF8C7355)),
+            label: '',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.person_outline),
+            selectedIcon: Icon(Icons.person, color: Color(0xFF8C7355)),
+            label: 'Perfil',
+          ),
+        ],
       ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: .center,
-          children: [
-            const Text('You have pushed the button this many times:'),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
+    );
+  }
+}
+
+// ==========================================
+// 1. PANTALLA INICIO (Dashboard Admin / Barbero)
+// ==========================================
+class HomeScreen extends StatelessWidget {
+  const HomeScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: ListView(
+        padding: const EdgeInsets.all(16.0),
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: const [
+                  Text('¡Hola, Alex !', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+                  Text('Lunes, 27 de julio', style: TextStyle(color: Colors.grey)),
+                ],
+              ),
+              const CircleAvatar(
+                backgroundColor: Color(0xFFECE3D2),
+                child: Icon(Icons.person, color: Colors.grey),
+              )
+            ],
+          ),
+          const SizedBox(height: 16),
+          Row(
+            children: [
+              Expanded(
+                child: _buildMetricCard(
+                  icon: Icons.calendar_today,
+                  title: 'Citas Hoy',
+                  value: '0',
+                  iconBg: const Color(0xFFF5EFE6),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: _buildMetricCard(
+                  icon: Icons.payments_outlined,
+                  title: 'Ingresos Hoy',
+                  value: '\$0',
+                  iconBg: const Color(0xFFE8F5E9),
+                  iconColor: Colors.green,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          Card(
+            elevation: 0,
+            color: Colors.white,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            child: const Padding(
+              padding: EdgeInsets.all(24.0),
+              child: Column(
+                children: [
+                  Icon(Icons.calendar_today_outlined, size: 40, color: Colors.grey),
+                  SizedBox(height: 8),
+                  Text('Sin citas hoy', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                  SizedBox(height: 4),
+                  Text('Toca para crear una nueva cita', style: TextStyle(color: Colors.grey, fontSize: 13)),
+                ],
+              ),
             ),
+          ),
+        ],
+      ),
+      // AQUÍ VA EL BOTÓN FLOTANTE:
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const RegistrarClienteScreen()),
+          );
+        },
+        backgroundColor: const Color(0xFFB89B77),
+        icon: const Icon(Icons.person_add, color: Colors.white),
+        label: const Text('Cliente Presencial', style: TextStyle(color: Colors.white)),
+      ),
+    );
+  }
+
+  static Widget _buildMetricCard({
+    required IconData icon,
+    required String title,
+    required String value,
+    required Color iconBg,
+    Color iconColor = Colors.brown,
+  }) {
+    return Card(
+      elevation: 0,
+      color: Colors.white,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            CircleAvatar(
+              backgroundColor: iconBg,
+              child: Icon(icon, color: iconColor),
+            ),
+            const SizedBox(height: 12),
+            Text(title, style: const TextStyle(color: Colors.grey, fontSize: 12)),
+            const SizedBox(height: 4),
+            Text(value, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
+    );
+  }
+}
+
+// ==========================================
+// 2. PANTALLA AGENDA (Vista de Citas)
+// ==========================================
+class AgendaScreen extends StatelessWidget {
+  AgendaScreen({super.key});
+
+  final List<Cliente> clientesEjemplo = [
+    Cliente(
+      id: '1',
+      nombre: 'Carlos Mendoza',
+      telefono: '0991234567',
+      recetaCorte: 'Corte degradado medio con barba delineada',
+      tienePromocion: true,
+    ),
+    Cliente(
+      id: '2',
+      nombre: 'Juan Pérez',
+      telefono: '0987654321',
+      recetaCorte: 'Corte clásico con tijera',
+      tienePromocion: false,
+    ),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.transparent,
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Mi Agenda',
+                        style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                      ),
+                      Text(
+                        '${clientesEjemplo.length} citas',
+                        style: const TextStyle(color: Colors.grey),
+                      ),
+                    ],
+                  ),
+                  FloatingActionButton.small(
+                    onPressed: () {},
+                    backgroundColor: const Color(0xFFB89B77),
+                    child: const Icon(Icons.add, color: Colors.white),
+                  )
+                ],
+              ),
+              const SizedBox(height: 16),
+              // Filtro superior
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                padding: const EdgeInsets.all(4),
+                child: Row(
+                  children: [
+                    _filterChip('Hoy', isSelected: true),
+                    _filterChip('Semana'),
+                    _filterChip('Próximas'),
+                    _filterChip('Pasadas'),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+              // Lista de clientes
+              Expanded(
+                child: clientesEjemplo.isEmpty
+                    ? const Center(
+                        child: Text(
+                          'No hay citas programadas para hoy',
+                          style: TextStyle(color: Colors.grey),
+                        ),
+                      )
+                    : ListView.builder(
+                        itemCount: clientesEjemplo.length,
+                        itemBuilder: (context, index) {
+                          final cliente = clientesEjemplo[index];
+                          return Card(
+                            margin: const EdgeInsets.only(bottom: 12),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: ListTile(
+                              leading: CircleAvatar(
+                                backgroundColor: const Color(0xFFB89B77),
+                                child: Text(
+                                  cliente.nombre[0],
+                                  style: const TextStyle(color: Colors.white),
+                                ),
+                              ),
+                              title: Text(
+                                cliente.nombre,
+                                style: const TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              subtitle: Text(cliente.recetaCorte ?? 'Sin especificaciones'),
+                              trailing: Text(
+                                cliente.telefono,
+                                style: const TextStyle(color: Colors.grey, fontSize: 12),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+              ),
+            ],
+          ),
+        ),
       ),
+    );
+  }
+
+  static Widget _filterChip(String text, {bool isSelected = false}) {
+    return Expanded(
+      child: Container(
+        alignment: Alignment.center,
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        decoration: BoxDecoration(
+          color: isSelected ? const Color(0xFFB89B77) : Colors.transparent,
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Text(
+          text,
+          style: TextStyle(
+            color: isSelected ? Colors.white : Colors.black54,
+            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+            fontSize: 12,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ==========================================
+// 3. PANTALLA CLIENTES
+// ==========================================
+class ClientesScreen extends StatelessWidget {
+  ClientesScreen({super.key});
+
+  final List<Cliente> clientesEjemplo = [
+    Cliente(
+      id: '1',
+      nombre: 'Carlos Mendoza',
+      telefono: '0991234567',
+      recetaCorte: 'Corte degradado medio con barba delineada',
+      tienePromocion: true,
+    ),
+    Cliente(
+      id: '2',
+      nombre: 'Juan Pérez',
+      telefono: '0987654321',
+      recetaCorte: 'Corte clásico con tijera',
+      tienePromocion: false,
+    ),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Clientes y Recetas'),
+      ),
+      body: ListView.builder(
+        itemCount: clientesEjemplo.length,
+        itemBuilder: (context, index) {
+          final cliente = clientesEjemplo[index];
+          return Card(
+            margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: ListTile(
+              leading: CircleAvatar(
+                backgroundColor: const Color(0xFFB89B77),
+                child: Text(
+                  cliente.nombre[0],
+                  style: const TextStyle(color: Colors.white),
+                ),
+              ),
+              title: Text(cliente.nombre),
+              subtitle: Text(cliente.recetaCorte ?? 'Sin receta'),
+              trailing: Text(cliente.telefono),
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+// ==========================================
+// 4. PANTALLA FINANZAS
+// ==========================================
+class FinanzasScreen extends StatelessWidget {
+  const FinanzasScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      padding: const EdgeInsets.all(16.0),
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: const [
+                Text('Finanzas', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                Text('Hoy', style: TextStyle(color: Colors.grey)),
+              ],
+            ),
+            OutlinedButton.icon(
+              onPressed: () {},
+              icon: const Icon(Icons.upload_file),
+              label: const Text('PDF'),
+              style: OutlinedButton.styleFrom(
+                backgroundColor: const Color(0xFFB89B77),
+                foregroundColor: Colors.white,
+                side: BorderSide.none,
+              ),
+            )
+          ],
+        ),
+        const SizedBox(height: 16),
+        Card(
+          elevation: 0,
+          color: Colors.white,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Row(
+              children: [
+                const CircleAvatar(
+                  backgroundColor: Color(0xFFE8F5E9),
+                  child: Icon(Icons.payments, color: Colors.green),
+                ),
+                const SizedBox(width: 16),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: const [
+                    Text('INGRESOS', style: TextStyle(color: Colors.grey, fontSize: 12, fontWeight: FontWeight.bold)),
+                    Text('\$0', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.green)),
+                  ],
+                )
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(height: 16),
+        Card(
+          elevation: 0,
+          color: Colors.white,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          child: const Padding(
+            padding: EdgeInsets.all(16.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                _StatColumn(title: 'Citas', value: '0'),
+                _StatColumn(title: 'Promedio', value: '\$0'),
+                _StatColumn(title: 'Pendientes', value: '0'),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _StatColumn extends StatelessWidget {
+  final String title;
+  final String value;
+  const _StatColumn({required this.title, required this.value});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        const CircleAvatar(radius: 4, backgroundColor: Colors.brown),
+        const SizedBox(height: 8),
+        Text(value, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+        const SizedBox(height: 4),
+        Text(title, style: const TextStyle(color: Colors.grey, fontSize: 12)),
+      ],
+    );
+  }
+}
+
+// ==========================================
+// 5. PANTALLA PERFIL Y CONFIGURACIÓN
+// ==========================================
+class PerfilScreen extends StatelessWidget {
+  const PerfilScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      padding: const EdgeInsets.all(16.0),
+      children: [
+        // Tarjeta Plan Premium
+        Card(
+          elevation: 0,
+          color: Colors.white,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: const [
+                    Row(
+                      children: [
+                        Icon(Icons.star_border, color: Colors.black87),
+                        SizedBox(width: 8),
+                        Text('Plan Gratuito', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                      ],
+                    ),
+                    Text('0/10', style: TextStyle(color: Colors.grey)),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: () {},
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFFB89B77),
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    ),
+                    child: const Text('Actualizar a Premium →'),
+                  ),
+                )
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(height: 16),
+        // Grupo 1 de opciones
+        _buildSettingsGroup([
+          // AQUÍ SE AGREGA LA NAVEGACIÓN A SERVICIOS_SCREEN:
+          _buildListTile(Icons.content_cut, 'Mis Servicios', () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const ServiciosScreen()),
+            );
+          }),
+          _buildListTile(Icons.notifications_none, 'Notificaciones', () {}),
+          ListTile(
+            leading: const Icon(Icons.access_time),
+            title: const Text('Formato de hora'),
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text('24h', style: TextStyle(color: Colors.grey, fontSize: 12)),
+                Switch(value: false, onChanged: (v) {}),
+                const Text('12h', style: TextStyle(fontSize: 12)),
+              ],
+            ),
+          ),
+        ]),
+        const SizedBox(height: 16),
+        // Grupo 2 de opciones
+        _buildSettingsGroup([
+          _buildListTile(Icons.help_outline, 'Ayuda', () {}),
+          _buildListTile(Icons.email_outlined, 'Contactar Soporte', () {}),
+          _buildListTile(Icons.description_outlined, 'Términos y Privacidad', () {}),
+        ]),
+        const SizedBox(height: 16),
+        // Grupo 3 de opciones (Acciones críticas)
+        _buildSettingsGroup([
+          _buildListTile(Icons.logout, 'Cerrar Sesión', () {}, color: Colors.orange),
+          _buildListTile(Icons.delete_outline, 'Eliminar cuenta', () {}, color: Colors.red),
+        ]),
+      ],
+    );
+  }
+
+  static Widget _buildSettingsGroup(List<Widget> tiles) {
+    return Card(
+      elevation: 0,
+      color: Colors.white,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      child: Column(children: tiles),
+    );
+  }
+
+  static Widget _buildListTile(IconData icon, String title, VoidCallback onTap, {Color? color}) {
+    return ListTile(
+      leading: Icon(icon, color: color ?? Colors.black87),
+      title: Text(title, style: TextStyle(color: color ?? Colors.black87)),
+      trailing: const Icon(Icons.chevron_right, color: Colors.grey),
+      onTap: onTap,
     );
   }
 }
