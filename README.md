@@ -85,3 +85,74 @@ my_primera_app_movil/
 │   └── main.dart                  # Punto de entrada principal y navegación
 ├── pubspec.yaml                   # Configuración de dependencias y assets
 └── README.md                      # Documentación del proyecto
+# 💈 Exclusive Barber App
+
+Aplicación móvil desarrollada en **Flutter** para la gestión integral y operativa de una barbería profesional. La aplicación permite administrar citas, clientes presenciales, registro de personal (barberos), control de finanzas en tiempo real y personalización de servicios.
+
+Se procede a continuar con la actualizacion e integracion de Navegación y Nuevos Widgets
+
+              ** Actividad Integradora2 **
+---        ** Navegación y Nuevos Widgets **
+
+## 📸 Resumen de Cambios y Avances Recientes
+
+### 1. Integración de Paquetes Externos y Configuración (`pubspec.yaml`)
+* **Identificador de la App:** Se cambió el nombre oficial del paquete a `exclusive_barber` en el archivo `pubspec.yaml` para darle identidad de marca propia al proyecto.
+
+![alt text] (<Captura de pantalla 2026-08-30 235214.png>)
+
+* **Integración de Backend:** Se agregaron los paquetes oficiales `firebase_core` y `cloud_firestore` para conectar la aplicación a la nube, permitiendo guardar y sincronizar la información de las citas, barberos y clientes en tiempo real.
+
+![alt text] (<Captura de pantalla 2026-08-30 230346.png>)
+
+
+* **Manejo de Fechas (`intl`):** Formateo e internacionalización de fechas en español para la agenda de citas.
+
+* **Carga de Imágenes en Red (`cached_network_image`):** Gestión eficiente y renderizado de imágenes desde internet con almacenamiento en caché.
+
+
+### 2. Rediseño del Sistema de Colores (Paleta Premium)
+Se actualizó la identidad visual para brindar una apariencia moderna, elegante y profesional:
+* **Negro Mate (`#1A1A1A` / `0xFF1A1A1A`):** Aplicado a textos principales, encabezados y elementos visuales de mayor peso.
+* **Café Tostado / Dorado (`#8C704B` / `0xFF8C704B`):** Utilizado en botones de acción principales (`ElevatedButton`, `FloatingActionButton`), acentos de la navegación e íconos activos.
+* **Blanco Hueso (`#F7F5F0` / `0xFFF7F5F0`):** Fondo general de las pantallas (`scaffoldBackgroundColor`) y tarjetas neutras.
+               
+### 3. Actualización de Recursos e Imágenes
+* **Gestión de Assets:** Configuración de la carpeta `assets/images/` en el archivo `pubspec.yaml` para soportar múltiples imágenes (como `logo1.png`) y (corte.png.)
+
+![alt text] (<assets/images/Captura de pantalla 2026-08-30 234019.png>)
+
+
+
+* ** 4.Integración Visual:** Implementación del logotipo/imagen principal en el encabezado de la pantalla de inicio y en la tarjeta del perfil general.
+
+![alt text](<Captura de pantalla 2026-08-30 224405.png>)
+
+![alt text](<Captura de pantalla 2026-08-30 223356.png>)
+
+![alt text](<assets/images/Captura de pantalla 2026-08-30 224723.png>)
+
+
+### 5. Mantenimiento de la Arquitectura
+* **Lógica Preservada:** Se mantuvo el 100% de las funciones de estado (`_agregarCita`, `_agregarBarbero`, `_selectDate`, `_mostrarTrabajosBarbero`).
+* **Flujo de Navegación:** Navegación por pestañas inferiores (`NavigationBar`) para las secciones principales y navegación apilada con `Navigator.push` hacia las vistas secundarias.
+
+---
+
+
+---
+
+## 📁 Estructura del Proyecto
+
+```text
+mi_primera_app_movil/
+├── assets/
+│   └── images/
+│       └── logo1.png              # Logotipo oficial e imágenes representativas
+├── lib/
+│   ├── main.dart                  # Punto de entrada, tema global y pantallas principales
+│   └── screens/
+│       ├── servicios_screen.dart          # Gestión de lista de servicios y precios
+│       ├── registrar_cliente_screen.dart  # Formulario de registro de cita presencial
+│       └── clientes_screen.dart           # Detalle de clientes registrados
+└── pubspec.yaml                   # Configuración de dependencias y carpeta de assets
