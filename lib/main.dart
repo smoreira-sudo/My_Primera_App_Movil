@@ -763,7 +763,7 @@ class PerfilScreen extends StatelessWidget {
         const SizedBox(height: 16),
         _buildSettingsGroup([
           _buildListTile(Icons.logout, 'Cerrar Sesión', () {}, color: Colors.orange),
-          _buildListTile(Icons.delete_outline, 'Eliminar cuenta', () {}, color: Colors.red),
+          _buildListTile(Icons.delete_outline, 'Eliminar cuenta', () {}, color: const Color.fromARGB(255, 205, 64, 78)),
         ]),
       ],
     );
