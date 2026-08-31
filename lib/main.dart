@@ -96,7 +96,9 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
   ];
 
   void _agregarCita(Cita nuevaCita) {
-    setState(() => _citas.add(nuevaCita));
+    setState(() {
+      _citas.add(nuevaCita);
+    });
   }
 
   void _agregarBarbero(Barbero nuevoBarbero) {
@@ -143,7 +145,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
 }
 
 // ==========================================
-// 1. PANTALLA INICIO (Actualizada)
+// 1. PANTALLA INICIO
 // ==========================================
 class HomeScreen extends StatefulWidget {
   final List<Cita> citas;
@@ -371,8 +373,22 @@ class _HomeScreenState extends State<HomeScreen> {
             context,
             MaterialPageRoute(builder: (context) => const RegistrarClienteScreen()),
           );
-          if (res != null && res is Cita) {
-            widget.onAgregarCita(res);
+          if (res != null) {
+            // Acepta Cita devuelta o Mapa dinámico
+            if (res is Cita) {
+              widget.onAgregarCita(res);
+            } else if (res is Map) {
+              widget.onAgregarCita(
+                Cita(
+                  cliente: res['cliente'] ?? res['nombre'] ?? 'Cliente Nuevo',
+                  telefono: res['telefono'] ?? '0900000000',
+                  corte: res['corte'] ?? res['servicio'] ?? 'Corte General',
+                  precio: double.tryParse(res['precio']?.toString() ?? '15.0') ?? 15.0,
+                  barbero: res['barbero'] ?? widget.barberos.first.nombre,
+                  fecha: DateTime.now(),
+                ),
+              );
+            }
           }
         },
         backgroundColor: const Color(0xFFB89B77),
@@ -430,25 +446,27 @@ class AgendaScreen extends StatelessWidget {
               Text('Mi Agenda (${citas.length})', style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
               const SizedBox(height: 16),
               Expanded(
-                child: ListView.builder(
-                  itemCount: citas.length,
-                  itemBuilder: (context, index) {
-                    final cita = citas[index];
-                    return Card(
-                      margin: const EdgeInsets.only(bottom: 12),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                      child: ListTile(
-                        leading: CircleAvatar(
-                          backgroundColor: const Color(0xFFB89B77),
-                          child: Text(cita.cliente[0], style: const TextStyle(color: Colors.white)),
-                        ),
-                        title: Text(cita.cliente, style: const TextStyle(fontWeight: FontWeight.bold)),
-                        subtitle: Text('${cita.corte} • Barbero: ${cita.barbero}'),
-                        trailing: Text(cita.telefono, style: const TextStyle(color: Colors.grey, fontSize: 12)),
+                child: citas.isEmpty
+                    ? const Center(child: Text('No hay citas agendadas.'))
+                    : ListView.builder(
+                        itemCount: citas.length,
+                        itemBuilder: (context, index) {
+                          final cita = citas[index];
+                          return Card(
+                            margin: const EdgeInsets.only(bottom: 12),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                            child: ListTile(
+                              leading: CircleAvatar(
+                                backgroundColor: const Color(0xFFB89B77),
+                                child: Text(cita.cliente.isNotEmpty ? cita.cliente[0].toUpperCase() : 'C', style: const TextStyle(color: Colors.white)),
+                              ),
+                              title: Text(cita.cliente, style: const TextStyle(fontWeight: FontWeight.bold)),
+                              subtitle: Text('${cita.corte} • Barbero: ${cita.barbero}'),
+                              trailing: Text(cita.telefono, style: const TextStyle(color: Colors.grey, fontSize: 12)),
+                            ),
+                          );
+                        },
                       ),
-                    );
-                  },
-                ),
               ),
             ],
           ),
@@ -459,7 +477,7 @@ class AgendaScreen extends StatelessWidget {
 }
 
 // ==========================================
-// 3. PANTALLA CLIENTES
+// 3. PANTALLA CLIENTES (Corregida)
 // ==========================================
 class ClientesScreen extends StatelessWidget {
   final List<Cita> citas;
@@ -468,25 +486,40 @@ class ClientesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Clientes y Recetas')),
-      body: ListView.builder(
-        itemCount: citas.length,
-        itemBuilder: (context, index) {
-          final cita = citas[index];
-          return Card(
-            margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: ListTile(
-              leading: CircleAvatar(
-                backgroundColor: const Color(0xFFB89B77),
-                child: Text(cita.cliente[0], style: const TextStyle(color: Colors.white)),
-              ),
-              title: Text(cita.cliente),
-              subtitle: Text(cita.corte),
-              trailing: Text(cita.telefono),
-            ),
-          );
-        },
+      appBar: AppBar(
+        title: Text('Clientes (${citas.length})'),
+        backgroundColor: const Color(0xFFF4EFE6),
+        elevation: 0,
       ),
+      body: citas.isEmpty
+          ? const Center(child: Text('No hay clientes registrados.'))
+          : ListView.builder(
+              itemCount: citas.length,
+              itemBuilder: (context, index) {
+                final cita = citas[index];
+                return Card(
+                  color: Colors.white,
+                  elevation: 0,
+                  margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  child: ListTile(
+                    leading: CircleAvatar(
+                      backgroundColor: const Color(0xFFB89B77),
+                      child: Text(
+                        cita.cliente.isNotEmpty ? cita.cliente[0].toUpperCase() : 'C',
+                        style: const TextStyle(color: Colors.white),
+                      ),
+                    ),
+                    title: Text(cita.cliente, style: const TextStyle(fontWeight: FontWeight.bold)),
+                    subtitle: Text('${cita.corte} (Barbero: ${cita.barbero})'),
+                    trailing: Text(
+                      cita.telefono,
+                      style: const TextStyle(color: Color.fromARGB(255, 128, 127, 127), fontSize: 12),
+                    ),
+                  ),
+                );
+              },
+            ),
     );
   }
 }
@@ -523,7 +556,7 @@ class FinanzasScreen extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text('INGRESOS TOTALES', style: TextStyle(color: Colors.grey, fontSize: 12, fontWeight: FontWeight.bold)),
+                    const Text('INGRESOS TOTALES', style: TextStyle(color: Color.fromARGB(255, 141, 137, 137), fontSize: 12, fontWeight: FontWeight.bold)),
                     Text('\$${ingresosTotales.toStringAsFixed(2)}', style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.green)),
                   ],
                 )
@@ -583,7 +616,7 @@ class _StatColumn extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const CircleAvatar(radius: 4, backgroundColor: Colors.brown),
+        const CircleAvatar(radius: 4, backgroundColor: Color.fromARGB(255, 92, 130, 227)),
         const SizedBox(height: 8),
         Text(value, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
         const SizedBox(height: 4),
