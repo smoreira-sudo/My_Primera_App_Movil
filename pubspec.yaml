@@ -33,4 +33,6 @@ flutter:
   uses-material-design: true
 
   assets:
+    - assets/images/logo1.png
     - assets/images/corte.png
+      
