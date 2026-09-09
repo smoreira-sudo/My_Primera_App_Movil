@@ -127,8 +127,7 @@ my_primera_app_movil/
 │   │   └── servicios_screen.dart
 │   └── main.dart                  # Punto de entrada principal y navegación
 ├── pubspec.yaml                   # Configuración de dependencias y assets
-└── README.md                      # Documentación del proyecto
-```
+└── README.md                      # Documentación del proyecto```
 
 #  Exclusive Barber App
 
