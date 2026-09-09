@@ -1,4 +1,4 @@
-name: my_primera_app_movil
+name: exclusive_barber
 description: "A new Flutter project."
 publish_to: 'none'
 
@@ -16,6 +16,13 @@ dependencies:
   cached_network_image: ^3.4.1
   firebase_core: ^4.14.0
   cloud_firestore: ^6.9.0
+  firebase_storage: 13.5.0
+  image_picker: ^1.1.2
+  firebase_auth: ^6.6.1
+  url_launcher: ^6.3.2
+  pdf: ^3.13.0
+  printing: ^5.15.0
+  
 
 dev_dependencies:
   flutter_test:

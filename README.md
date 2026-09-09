@@ -94,9 +94,9 @@ Se procede a continuar con la actualizacion e integracion de Navegación y Nuevo
               ** Actividad Integradora2 **
 ---        ** Navegación y Nuevos Widgets **
 
-## 📸 Resumen de Cambios y Avances Recientes (Actividad Integradora 2)
+## Resumen de Cambios y Avances Recientes 
 
-### 📦 1. Integración de Paquetes Externos y Configuración (`pubspec.yaml`)
+###  1. Integración de Paquetes Externos y Configuración (`pubspec.yaml`)
 * **Identificador de la App:** Se cambió el nombre oficial del paquete a `exclusive_barber` en el archivo `pubspec.yaml` para darle identidad de marca propia al proyecto.
 
 ![alt text] (<Captura de pantalla 2026-08-30 235214.png>)
@@ -111,7 +111,7 @@ Se procede a continuar con la actualizacion e integracion de Navegación y Nuevo
 
 ---
 
-### 🎨 2. Rediseño del Sistema de Colores (Paleta Premium)
+###  2. Rediseño del Sistema de Colores (Paleta Premium)
 Se actualizó la identidad visual para brindar una apariencia moderna, elegante y profesional:
 * **Negro Mate (`#1A1A1A` / `0xFF1A1A1A`):** Aplicado a textos principales, encabezados y elementos visuales de mayor peso.
 * **Café Tostado / Dorado (`#8C704B` / `0xFF8C704B`):** Utilizado en botones de acción principales (`ElevatedButton`, `FloatingActionButton`), acentos de la navegación e íconos activos.
@@ -119,7 +119,7 @@ Se actualizó la identidad visual para brindar una apariencia moderna, elegante 
 
 ---
 
-### 🖼️ 3. Actualización de Recursos e Imágenes
+###  3. Actualización de Recursos e Imágenes
 * **Gestión de Assets:** Configuración de la carpeta `assets/images/` en el archivo `pubspec.yaml` para soportar múltiples imágenes (como `logo1.png` y `corte.png`).
 
 ![alt text] (<Captura de pantalla 2026-08-30 234019.png>)
@@ -134,13 +134,13 @@ Se actualizó la identidad visual para brindar una apariencia moderna, elegante 
 
 ---
 
-### 🛠️ 4. Mantenimiento de la Arquitectura
+###  4. Mantenimiento de la Arquitectura
 * **Lógica Preservada:** Se mantuvo el 100% de las funciones de estado (`_agregarCita`, `_agregarBarbero`, `_selectDate`, `_mostrarTrabajosBarbero`).
 * **Flujo de Navegación:** Navegación por pestañas inferiores (`NavigationBar`) para las secciones principales y navegación apilada con `Navigator.push` hacia las vistas secundarias (`RegistrarClienteScreen` y `ServiciosScreen`).
 
 ---
 
-## 🛠️ Requisitos Técnicos y Widgets Utilizados
+##  Requisitos Técnicos y Widgets Utilizados
 
 ### Widgets Principales de Flutter
 * **Estructura y Layout:** `MaterialApp`, `Scaffold`, `SafeArea`, `Column`, `Row`, `Container`, `Card`, `Padding`, `SizedBox`.
@@ -150,7 +150,7 @@ Se actualizó la identidad visual para brindar una apariencia moderna, elegante 
 
 ---
 
-## 📁 Estructura del Proyecto
+##  Estructura del Proyecto
 
 ```text
 my_primera_app_movil/
