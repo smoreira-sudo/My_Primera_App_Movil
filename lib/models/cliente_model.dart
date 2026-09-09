@@ -1,37 +1,36 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Cliente {
   final String id;
   final String nombre;
   final String telefono;
-  final String? recetaCorte;
-  final bool tienePromocion;
+  final String notasGenerales;
+  final int totalVisitas;
+  final DateTime? ultimaVisita;
+  final String barberiaId;
 
   Cliente({
     required this.id,
     required this.nombre,
     required this.telefono,
-    this.recetaCorte,
-    this.tienePromocion = false,
+    this.notasGenerales = '',
+    this.totalVisitas = 0,
+    this.ultimaVisita,
+    this.barberiaId = 'barberia_default',
   });
 
-  // Convertir un objeto Cliente a Mapa (para enviar a la base de datos)
-  Map<String, dynamic> toMap() {
-    return {
-      'id': id,
-      'nombre': nombre,
-      'telefono': telefono,
-      'recetaCorte': recetaCorte,
-      'tienePromocion': tienePromocion,
-    };
-  }
-
-  // Crear un objeto Cliente desde un Mapa (para leer desde la base de datos)
-  factory Cliente.fromMap(Map<String, dynamic> map, String docId) {
+  factory Cliente.fromFirestore(DocumentSnapshot doc) {
+    final data = doc.data() as Map<String, dynamic>? ?? {};
     return Cliente(
-      id: docId,
-      nombre: map['nombre'] ?? '',
-      telefono: map['telefono'] ?? '',
-      recetaCorte: map['recetaCorte'],
-      tienePromocion: map['tienePromocion'] ?? false,
+      id: doc.id,
+      nombre: data['nombre'] ?? 'Sin nombre',
+      telefono: data['telefono'] ?? '',
+      notasGenerales: data['notasGenerales'] ?? '',
+      totalVisitas: (data['totalVisitas'] ?? 0).toInt(),
+      ultimaVisita: data['ultimaVisita'] != null 
+          ? (data['ultimaVisita'] as Timestamp).toDate() 
+          : null,
+      barberiaId: data['barberiaId'] ?? 'barberia_default',
     );
   }
 }

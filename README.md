@@ -85,3 +85,9 @@ my_primera_app_movil/
 │   └── main.dart                  # Punto de entrada principal y navegación
 ├── pubspec.yaml                   # Configuración de dependencias y assets
 └── README.md                      # Documentación del proyecto
+# 💈 Exclusive Barber App
+
+Aplicación móvil desarrollada en **Flutter** para la gestión integral y operativa de una barbería profesional. La aplicación permite administrar citas, clientes presenciales, registro de personal (barberos), control de finanzas en tiempo real y personalización de servicios.
+
+---
+

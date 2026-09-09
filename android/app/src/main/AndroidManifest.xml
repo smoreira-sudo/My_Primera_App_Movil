@@ -1,6 +1,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- PERMISOS DE CÁMARA E INTERNET -->
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.CAMERA"/>
+
     <application
-        android:label="my_primera_app_movil"
+        android:label="Exclusive Barber Shop"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

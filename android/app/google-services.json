@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "747599968445",
+    "project_id": "barberia-prueba-16754",
+    "storage_bucket": "barberia-prueba-16754.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:747599968445:android:ded67e5f46508266329fd4",
+        "android_client_info": {
+          "package_name": "com.example.exclusive_barber"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDA33kjuoLwT1PX7ZZ7w928z_yBAsQuuIY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

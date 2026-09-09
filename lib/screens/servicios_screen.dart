@@ -1,60 +1,41 @@
 import 'package:flutter/material.dart';
-import 'package:my_primera_app_movil/models/servicio_model.dart'; // O 'package:tu_proyecto/servicio_model.dart' según dónde guardaste el modelo
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-class ServiciosScreen extends StatefulWidget {
-  const ServiciosScreen({super.key});
+class Servicio {
+  final String id;
+  final String nombre;
+  final double precio;
+  final int duracion; // en minutos
+  final bool activo;
 
-  @override
-  State<ServiciosScreen> createState() => _ServiciosScreenState();
-}
+  Servicio({
+    required this.id,
+    required this.nombre,
+    required this.precio,
+    required this.duracion,
+    this.activo = true,
+  });
 
-class _ServiciosScreenState extends State<ServiciosScreen> {
-  // Lista dinámica de servicios (ahora sí se puede modificar)
-  final List<Servicio> _servicios = [
-    Servicio(id: '1', nombre: 'Corte Tradicional', precio: 12.00, duracionMinutos: 30),
-    Servicio(id: '2', nombre: 'Corte + Barba', precio: 18.00, duracionMinutos: 45),
-    Servicio(id: '3', nombre: 'Perfilado de Barba', precio: 8.00, duracionMinutos: 20),
-  ];
-
-  // Controladores para el formulario de nuevo servicio
-  final TextEditingController _nombreController = TextEditingController();
-  final TextEditingController _precioController = TextEditingController();
-  final TextEditingController _duracionController = TextEditingController();
-
-  void _agregarServicio() {
-    final String nombre = _nombreController.text.trim();
-    final double? precio = double.tryParse(_precioController.text);
-    final int? duracion = int.tryParse(_duracionController.text);
-
-    if (nombre.isNotEmpty && precio != null && duracion != null) {
-      setState(() {
-        _servicios.add(
-          Servicio(
-            id: DateTime.now().millisecondsSinceEpoch.toString(),
-            nombre: nombre,
-            precio: precio,
-            duracionMinutos: duracion,
-          ),
-        );
-      });
-
-      _nombreController.clear();
-      _precioController.clear();
-      _duracionController.clear();
-      Navigator.pop(context);
-    }
-  }
-
-  void _sincronizarConWeb() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Sincronizando servicios con la página web...'),
-        duration: Duration(seconds: 2),
-      ),
+  factory Servicio.fromFirestore(DocumentSnapshot doc) {
+    final data = doc.data() as Map<String, dynamic>? ?? {};
+    return Servicio(
+      id: doc.id,
+      nombre: data['nombre'] ?? 'Sin nombre',
+      precio: (data['precio'] ?? 0.0).toDouble(),
+      duracion: (data['duracion'] ?? 30).toInt(),
+      activo: data['activo'] ?? true,
     );
   }
+}
 
-  void _mostrarFormularioNuevoServicio() {
+class ServiciosScreen extends StatelessWidget {
+  const ServiciosScreen({super.key});
+
+  void _mostrarFormularioServicio(BuildContext context, {Servicio? servicio}) {
+    final nombreCtrl = TextEditingController(text: servicio?.nombre ?? '');
+    final precioCtrl = TextEditingController(text: servicio != null ? servicio.precio.toStringAsFixed(2) : '');
+    final duracionCtrl = TextEditingController(text: servicio != null ? servicio.duracion.toString() : '30');
+
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -64,65 +45,74 @@ class _ServiciosScreenState extends State<ServiciosScreen> {
       builder: (context) {
         return Padding(
           padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom + 20,
             top: 20,
             left: 20,
             right: 20,
-            bottom: MediaQuery.of(context).viewInsets.bottom + 20,
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                'Nuevo Servicio',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              Text(
+                servicio == null ? 'Nuevo Servicio' : 'Editar Servicio',
+                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 16),
               TextField(
-                controller: _nombreController,
-                decoration: const InputDecoration(
-                  labelText: 'Nombre del servicio',
-                  border: OutlineInputBorder(),
-                ),
+                controller: nombreCtrl,
+                decoration: const InputDecoration(labelText: 'Nombre del servicio (ej. Corte + Barba)'),
               ),
               const SizedBox(height: 12),
               Row(
                 children: [
                   Expanded(
                     child: TextField(
-                      controller: _precioController,
-                      keyboardType: TextInputType.number,
-                      decoration: const InputDecoration(
-                        labelText: 'Precio (\$)',
-                        border: OutlineInputBorder(),
-                      ),
+                      controller: precioCtrl,
+                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                      decoration: const InputDecoration(labelText: 'Precio (\$)'),
                     ),
                   ),
                   const SizedBox(width: 12),
                   Expanded(
                     child: TextField(
-                      controller: _duracionController,
+                      controller: duracionCtrl,
                       keyboardType: TextInputType.number,
-                      decoration: const InputDecoration(
-                        labelText: 'Duración (min)',
-                        border: OutlineInputBorder(),
-                      ),
+                      decoration: const InputDecoration(labelText: 'Duración (min)'),
                     ),
                   ),
                 ],
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 24),
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: _agregarServicio,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFFB89B77),
+                    foregroundColor: Colors.white,
                     padding: const EdgeInsets.symmetric(vertical: 14),
                   ),
-                  child: const Text('Guardar Servicio', style: TextStyle(color: Colors.white)),
+                  onPressed: () async {
+                    if (nombreCtrl.text.isEmpty || precioCtrl.text.isEmpty) return;
+
+                    final datos = {
+                      'nombre': nombreCtrl.text,
+                      'precio': double.tryParse(precioCtrl.text) ?? 0.0,
+                      'duracion': int.tryParse(duracionCtrl.text) ?? 30,
+                      'activo': servicio?.activo ?? true,
+                    };
+
+                    if (servicio == null) {
+                      await FirebaseFirestore.instance.collection('servicios').add(datos);
+                    } else {
+                      await FirebaseFirestore.instance.collection('servicios').doc(servicio.id).update(datos);
+                    }
+
+                    if (context.mounted) Navigator.pop(context);
+                  },
+                  child: Text(servicio == null ? 'Guardar Servicio' : 'Actualizar Servicio'),
                 ),
-              )
+              ),
             ],
           ),
         );
@@ -130,69 +120,110 @@ class _ServiciosScreenState extends State<ServiciosScreen> {
     );
   }
 
+  void _eliminarServicio(BuildContext context, String id) async {
+    await FirebaseFirestore.instance.collection('servicios').doc(id).delete();
+  }
+
+  void _toggleEstadoServicio(String id, bool estadoActual) async {
+    await FirebaseFirestore.instance.collection('servicios').doc(id).update({
+      'activo': !estadoActual,
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.transparent,
       appBar: AppBar(
-        title: const Text('Catálogo de Servicios'),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.cloud_upload),
-            tooltip: 'Publicar cambios en la Web',
-            onPressed: _sincronizarConWeb,
-          ),
-        ],
+        title: const Text('Mis Servicios'),
+        backgroundColor: const Color(0xFFF4EFE6),
+      ),
+      body: StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance.collection('servicios').snapshots(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator(color: Color(0xFFB89B77)));
+          }
+
+          final docs = snapshot.data?.docs ?? [];
+          final servicios = docs.map((d) => Servicio.fromFirestore(d)).toList();
+
+          if (servicios.isEmpty) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text('No tienes servicios registrados.'),
+                  const SizedBox(height: 12),
+                  ElevatedButton(
+                    onPressed: () => _mostrarFormularioServicio(context),
+                    child: const Text('Crear mi primer servicio'),
+                  ),
+                ],
+              ),
+            );
+          }
+
+          return ListView.builder(
+            padding: const EdgeInsets.all(16),
+            itemCount: servicios.length,
+            itemBuilder: (context, index) {
+              final servicio = servicios[index];
+              return Card(
+                color: Colors.white,
+                elevation: 0,
+                margin: const EdgeInsets.only(bottom: 12),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                child: ListTile(
+                  leading: CircleAvatar(
+                    backgroundColor: const Color(0xFFF2E9DB),
+                    child: Icon(
+                      Icons.content_cut,
+                      color: servicio.activo ? const Color(0xFF8C7355) : Colors.grey,
+                    ),
+                  ),
+                  title: Text(
+                    servicio.nombre,
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      decoration: servicio.activo ? null : TextDecoration.lineThrough,
+                      color: servicio.activo ? Colors.black : Colors.grey,
+                    ),
+                  ),
+                  subtitle: Text('${servicio.duracion} min • \$${servicio.precio.toStringAsFixed(2)}'),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Switch(
+                        value: servicio.activo,
+                        activeThumbColor: const Color(0xFFB89B77),
+                        onChanged: (v) => _toggleEstadoServicio(servicio.id, servicio.activo),
+                      ),
+                      PopupMenuButton<String>(
+                        onSelected: (val) {
+                          if (val == 'editar') {
+                            _mostrarFormularioServicio(context, servicio: servicio);
+                          } else if (val == 'eliminar') {
+                            _eliminarServicio(context, servicio.id);
+                          }
+                        },
+                        itemBuilder: (context) => [
+                          const PopupMenuItem(value: 'editar', child: Text('Editar')),
+                          const PopupMenuItem(value: 'eliminar', child: Text('Eliminar', style: TextStyle(color: Colors.red))),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          );
+        },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _mostrarFormularioNuevoServicio,
+        onPressed: () => _mostrarFormularioServicio(context),
         backgroundColor: const Color(0xFFB89B77),
         child: const Icon(Icons.add, color: Colors.white),
       ),
-      body: _servicios.isEmpty
-          ? const Center(child: Text('No hay servicios registrados.'))
-          : ListView.builder(
-              padding: const EdgeInsets.all(16),
-              itemCount: _servicios.length,
-              itemBuilder: (context, index) {
-                final servicio = _servicios[index];
-                return Card(
-                  margin: const EdgeInsets.only(bottom: 12),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                  child: ListTile(
-                    leading: const CircleAvatar(
-                      backgroundColor: Color(0xFFB89B77),
-                      child: Icon(Icons.content_cut, color: Colors.white, size: 20),
-                    ),
-                    title: Text(servicio.nombre, style: const TextStyle(fontWeight: FontWeight.bold)),
-                    subtitle: Text('${servicio.duracionMinutos} min'),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          '\$${servicio.precio.toStringAsFixed(2)}',
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                            color: Colors.green,
-                          ),
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.delete_outline, color: Colors.redAccent),
-                          onPressed: () {
-                            setState(() {
-                              _servicios.removeAt(index);
-                            });
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              },
-            ),
     );
   }
 }
